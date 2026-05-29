@@ -284,12 +284,6 @@ export default function App() {
               <Plus size={16} strokeWidth={3} />
               New Habit
             </button>
-
-            <div className="p-3 border border-dark-border rounded-xl bg-dark-bg/20 text-center">
-              <p className="text-[10px] text-gray-500 font-semibold leading-relaxed">
-                HABITFLOW V1.0.0
-              </p>
-            </div>
           </div>
         </aside>
 
