@@ -114,10 +114,7 @@ export default function HabitGrid({
               <tr>
                 <td colSpan={8} className="p-12 text-center text-gray-500">
                   <div className="flex flex-col items-center justify-center gap-3">
-                    <p className="text-sm font-semibold text-gray-400">No habits registered for this week.</p>
-                    <p className="text-xs text-gray-500 max-w-sm leading-relaxed">
-                      Click the "New Habit" button at the bottom of the sidebar to kickstart your tracking dashboard.
-                    </p>
+                    <p className="text-sm font-semibold text-gray-400">No habits yet. Add your first habit to get started</p>
                   </div>
                 </td>
               </tr>

@@ -23,40 +23,6 @@ import AddHabitModal from './components/AddHabitModal';
 import ProgressView from './components/ProgressView';
 import SettingsView from './components/SettingsView';
 
-// Helper to generate dynamic demo data relative to the current date
-const generateDemoData = () => {
-  const today = new Date();
-  
-  const getRelativeDateStr = (offsetDays) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() - offsetDays);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-  };
-
-  const demoHabits = [
-    { id: 'demo-run', name: 'Morning run', category: 'FITNESS', createdAt: new Date().toISOString() },
-    { id: 'demo-read', name: 'Read 20 pages', category: 'LEARN', createdAt: new Date().toISOString() },
-    { id: 'demo-sugar', name: 'No sugar', category: 'MIND', createdAt: new Date().toISOString() },
-    { id: 'demo-project', name: 'Build React UI', category: 'PROJECT', createdAt: new Date().toISOString() }
-  ];
-
-  const demoCompletions = {
-    // 12-day streak (today, yesterday, and 10 prior days)
-    'demo-run': Array.from({ length: 12 }, (_, i) => getRelativeDateStr(i)),
-    // 5-day streak
-    'demo-read': Array.from({ length: 5 }, (_, i) => getRelativeDateStr(i)),
-    // 3-day streak
-    'demo-sugar': Array.from({ length: 3 }, (_, i) => getRelativeDateStr(i)),
-    // 4-day streak
-    'demo-project': Array.from({ length: 4 }, (_, i) => getRelativeDateStr(i))
-  };
-
-  return { habits: demoHabits, completions: demoCompletions };
-};
-
 export default function App() {
   // Navigation View: 'today' | 'progress' | 'settings'
   const [activeView, setActiveView] = useState('today');
@@ -82,15 +48,6 @@ export default function App() {
     }
     if (storedCompletions) {
       setCompletions(JSON.parse(storedCompletions));
-    }
-
-    // Load dynamic demo data on very first launch
-    if (!storedHabits) {
-      const demo = generateDemoData();
-      setHabits(demo.habits);
-      setCompletions(demo.completions);
-      localStorage.setItem('habitflow_habits', JSON.stringify(demo.habits));
-      localStorage.setItem('habitflow_completions', JSON.stringify(demo.completions));
     }
   }, []);
 
@@ -182,15 +139,6 @@ export default function App() {
     setCompletions({});
     localStorage.removeItem('habitflow_habits');
     localStorage.removeItem('habitflow_completions');
-  };
-
-  const handleLoadDemoData = () => {
-    const demo = generateDemoData();
-    setHabits(demo.habits);
-    setCompletions(demo.completions);
-    localStorage.setItem('habitflow_habits', JSON.stringify(demo.habits));
-    localStorage.setItem('habitflow_completions', JSON.stringify(demo.completions));
-    setActiveView('today');
   };
 
   // 3. Weekly Navigation Handlers
