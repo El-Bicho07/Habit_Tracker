@@ -107,9 +107,9 @@ The app uses an **active grace period** model:
 
 ## Screenshots
 
-> Add screenshots of your dashboard, progress, and settings pages here.
-
----
+![Dashboard](<img width="1913" height="916" alt="image" src="https://github.com/user-attachments/assets/d4f13aa7-1606-427d-a623-f049669ee0ec" />)
+![Progress](<img width="1906" height="918" alt="image" src="https://github.com/user-attachments/assets/6e69c544-86b8-4092-9727-f403783150e2" />)
+![Settings](<img width="1912" height="913" alt="image" src="https://github.com/user-attachments/assets/776a9ea4-b243-4c7f-bf1b-fa3f22e43180" />)
 
 ## License
 
