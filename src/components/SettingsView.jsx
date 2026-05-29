@@ -109,7 +109,7 @@ export default function SettingsView({
       <div>
         <h2 className="text-2xl font-bold font-display text-gray-100">Settings</h2>
         <p className="text-gray-400 text-sm mt-1">
-          Configure habits, switch themes, load demonstration records, or manage backups.
+          Manage your habits and data
         </p>
       </div>
 

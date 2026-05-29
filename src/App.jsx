@@ -1,16 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  CheckSquare, 
   BarChart2, 
   Settings, 
   Plus, 
-  Calendar,
-  Layers,
-  Search,
-  Bell,
-  User,
-  Quote,
-  Trophy
+  Calendar
 } from 'lucide-react';
 import { 
   getWeekDates, 
@@ -30,9 +23,6 @@ export default function App() {
   
   // Date Management
   const [referenceDate, setReferenceDate] = useState(new Date());
-  
-  // Search state
-  const [searchQuery, setSearchQuery] = useState('');
   
   // Core Habit Tracker States
   const [habits, setHabits] = useState([]);
@@ -58,19 +48,11 @@ export default function App() {
 
   // Filter habits visible in this week (createdAt <= Sunday of reference week, OR has completion data in this week)
   const visibleHabits = useMemo(() => {
-    let filtered = habits;
-    
-    // Apply search filter if query exists
-    if (searchQuery.trim() !== '') {
-      const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(h => h.name.toLowerCase().includes(q));
-    }
-
-    if (weekDates.length < 7) return filtered;
+    if (weekDates.length < 7) return habits;
     const sundayStr = formatDateKey(weekDates[6]);
     const weekDateStrings = weekDates.map((d) => formatDateKey(d));
     
-    return filtered.filter((habit) => {
+    return habits.filter((habit) => {
       // 1. If it has completion data for this week, always show it
       const habitCompletions = completions[habit.id] || [];
       const hasCompletionsThisWeek = weekDateStrings.some((dStr) => habitCompletions.includes(dStr));
@@ -81,7 +63,7 @@ export default function App() {
       const createdDateStr = formatDateKey(new Date(habit.createdAt));
       return sundayStr >= createdDateStr;
     });
-  }, [habits, completions, weekDates, searchQuery]);
+  }, [habits, completions, weekDates]);
 
   // 2. State Mutation Handlers
   const handleAddHabit = (name, category = 'FITNESS') => {
@@ -172,33 +154,8 @@ export default function App() {
           <span className="text-lg font-bold font-display tracking-tight text-white">HabitFlow</span>
         </div>
 
-        {/* Centered Search Bar */}
-        <div className="relative max-w-md w-full mx-8 hidden sm:block">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-            <Search size={16} />
-          </div>
-          <input
-            type="text"
-            placeholder={
-              activeView === 'today' 
-                ? "Search habits..." 
-                : activeView === 'progress' 
-                  ? "Search insights..." 
-                  : "Search settings..."
-            }
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-1.5 bg-dark-hover border border-dark-border/60 rounded-full text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-all font-sans"
-          />
-        </div>
-
         {/* Right Shortcuts */}
         <div className="flex items-center gap-2">
-          <button className="p-2 text-gray-400 hover:text-gray-200 hover:bg-dark-hover rounded-lg transition-colors cursor-pointer relative">
-            <Bell size={18} />
-            <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-brand-500" />
-          </button>
-          
           <button 
             onClick={() => setActiveView('settings')}
             className={`p-2 rounded-lg transition-colors cursor-pointer border ${
@@ -210,12 +167,6 @@ export default function App() {
           >
             <Settings size={18} />
           </button>
-
-          <div className="h-8 w-px bg-dark-border mx-1" />
-
-          <button className="h-8 w-8 rounded-full bg-dark-hover border border-dark-border flex items-center justify-center text-gray-400 hover:text-gray-200 cursor-pointer overflow-hidden">
-            <User size={16} />
-          </button>
         </div>
       </header>
 
@@ -226,12 +177,6 @@ export default function App() {
         <aside className="w-64 border-r border-dark-border bg-dark-sidebar flex flex-col justify-between hidden md:flex shrink-0 p-4">
           
           <div className="space-y-6">
-            <div className="pl-3">
-              <span className="text-[11px] font-black text-brand-500 tracking-widest uppercase select-none font-display">
-                Growth through Clarity
-              </span>
-            </div>
-
             <nav className="space-y-1.5">
               
               {/* TODAY TAB */}
@@ -311,62 +256,18 @@ export default function App() {
                 referenceDate={referenceDate}
               />
 
-              {/* Two-Column Grid: Left: Weekly Tracker, Right: Decorative quote & milestone cards */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mt-6">
-                
-                {/* Checkboxes Grid Component (Left 2/3 width) */}
-                <div className="lg:col-span-8">
-                  <HabitGrid 
-                    habits={visibleHabits}
-                    completions={completions}
-                    onToggle={handleToggleHabit}
-                    weekDates={weekDates}
-                    onPrevWeek={handlePrevWeek}
-                    onNextWeek={handleNextWeek}
-                    onJumpToToday={handleJumpToToday}
-                    referenceDate={referenceDate}
-                  />
-                </div>
-
-                {/* Right Panel Stack (Right 1/3 width) */}
-                <div className="lg:col-span-4 space-y-6">
-                  
-                  {/* Quote Card (Solid Emerald Accent) */}
-                  <div className="bg-brand-500 text-dark-bg p-6 rounded-3xl flex flex-col justify-between relative overflow-hidden shadow-level-1 h-52">
-                    <Quote size={80} className="absolute right-4 bottom-2 text-brand-600/20 font-bold pointer-events-none" strokeWidth={1} />
-                    <span className="text-4xl font-serif font-black leading-none opacity-40 select-none">“</span>
-                    <p className="text-sm font-semibold italic mt-1 leading-relaxed z-10">
-                      "Success is the sum of small efforts, repeated day in and day out."
-                    </p>
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest mt-4 block z-10">
-                      — ROBERT COLLIER
-                    </span>
-                  </div>
-
-                  {/* Milestone Card */}
-                  <div className="bg-dark-card border border-dark-border p-5 rounded-3xl shadow-level-1 flex flex-col gap-4">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">Milestone Near</h4>
-                    
-                    <div className="flex items-center gap-3 bg-dark-bg/40 border border-dark-border/40 p-4.5 rounded-2xl">
-                      <div className="p-3 bg-brand-500/10 border border-brand-500/20 text-brand-500 rounded-xl">
-                        <Trophy size={18} />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-bold text-gray-200 font-display">30 Day Streak</p>
-                        <p className="text-xs text-gray-400 mt-0.5">Only 6 days to go!</p>
-                      </div>
-                    </div>
-                    
-                    {/* Progress Slider */}
-                    <div className="space-y-1">
-                      <div className="h-1.5 w-full bg-dark-bg border border-dark-border rounded-full overflow-hidden">
-                        <div className="h-full bg-brand-500 rounded-full" style={{ width: '80%' }} />
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
+              {/* Weekly Tracker Habit Grid */}
+              <div className="mt-6">
+                <HabitGrid 
+                  habits={visibleHabits}
+                  completions={completions}
+                  onToggle={handleToggleHabit}
+                  weekDates={weekDates}
+                  onPrevWeek={handlePrevWeek}
+                  onNextWeek={handleNextWeek}
+                  onJumpToToday={handleJumpToToday}
+                  referenceDate={referenceDate}
+                />
               </div>
 
             </div>
